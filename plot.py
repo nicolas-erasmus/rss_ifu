@@ -36,8 +36,11 @@ def plot_by_group(data, radius_mm):
     ax.set_xlim(data["X location in mm"].min()-1, data["X location in mm"].max()+1)
     ax.set_ylim(data["Y location in mm"].min()-1, data["Y location in mm"].max()+1)
 
-    # Add legend
-    patches = [mpatches.Patch(color=color, label=f"Group {grp}") for grp, color in group_colors.items()]
+    # === Add legend with counts ===
+    patches = []
+    for grp, color in group_colors.items():
+        count = len(data[data["Group"] == grp])
+        patches.append(mpatches.Patch(color=color, label=f"Group {grp} (n={count})"))
     ax.legend(handles=patches, loc='upper right', fontsize=6)
     plt.show()
 
@@ -85,9 +88,10 @@ def plot_telecentricity_hist(data, bins=None):
         subset = data[data["Group"] == grp]
         if not subset.empty:
             linestyle = '-' if i < half_point else ':'
+            count = len(subset)
             ax.hist(subset["Non-telecentricity in degree"], bins=bins,
                     histtype='step', linewidth=5,
-                    linestyle=linestyle, color=group_colors[grp], label=f"{grp}")
+                    linestyle=linestyle, color=group_colors[grp], label=f"Group {grp} (n={count})")
 
     ax.set_xlabel("Δθ (degree)")
     ax.set_ylabel("N")
