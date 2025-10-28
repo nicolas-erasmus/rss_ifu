@@ -4,7 +4,11 @@ import matplotlib.patches as mpatches
 import numpy as np
 
 # Load the data
-file_path = "SMI_300_data_object.csv"  # Change path if needed
+# file_path = "SMI_300_data_object.csv"  #for object bundle
+# file_path = "SMI_300_data_sky_LHS.csv"  #for LHS sky bundle
+file_path = "SMI_300_data_sky_RHS.csv"  #for RHS sky bundle
+
+
 data = pd.read_csv(file_path)
 
 # Define group colors (consistent with your earlier specification)
@@ -49,17 +53,20 @@ def plot_by_group(data, radius_mm):
 def plot_by_telecentricity(data, radius_mm):
     fig, ax = plt.subplots(figsize=(8, 8))
     tele_vals = data["Non-telecentricity in degree"]
-    norm = plt.Normalize(vmin=tele_vals.min(), vmax=tele_vals.max())
-    cmap = plt.cm.viridis #plt.cm.gray_r
+    
+    # Fixed colorbar range
+    norm = plt.Normalize(vmin=-0.05, vmax=0.30)
+    cmap = plt.cm.viridis  # or plt.cm.gray_r
 
     for _, row in data.iterrows():
         color = cmap(norm(row["Non-telecentricity in degree"]))
         circle = plt.Circle((row["X location in mm"], row["Y location in mm"]),
-                            radius = radius_mm, color=color, ec="black", lw=0.5)
+                            radius=radius_mm, color=color, ec="black", lw=0.5)
         ax.add_patch(circle)
         ax.text(row["X location in mm"], row["Y location in mm"], f"{row['Fiber ID']:.0f}",
                 ha='center', va='center', fontsize=6, color='white', weight='bold')
 
+    # Colorbar with fixed limits
     sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
     sm.set_array([])
     plt.colorbar(sm, ax=ax, label="Non-telecentricity (degree)")
@@ -68,10 +75,9 @@ def plot_by_telecentricity(data, radius_mm):
     ax.set_xlabel("X location (mm)")
     ax.set_ylabel("Y location (mm)")
     ax.set_title("Fiber positions shaded by Non-telecentricity")
-    ax.set_xlim(data["X location in mm"].min()-1, data["X location in mm"].max()+1)
-    ax.set_ylim(data["Y location in mm"].min()-1, data["Y location in mm"].max()+1)
+    ax.set_xlim(data["X location in mm"].min() - 1, data["X location in mm"].max() + 1)
+    ax.set_ylim(data["Y location in mm"].min() - 1, data["Y location in mm"].max() + 1)
     plt.show()
-
 
 # === 3. Histogram of Non-telecentricity for each group (custom bin edges) ===
 def plot_telecentricity_hist(data, bins=None):
