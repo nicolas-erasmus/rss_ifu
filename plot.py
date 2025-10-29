@@ -96,7 +96,7 @@ def plot_telecentricity_hist(data, bins=None):
             linestyle = '-' if i < half_point else ':'
             count = len(subset)
             ax.hist(subset["Non-telecentricity in degree"], bins=bins,
-                    histtype='step', linewidth=5,
+                    histtype='step', linewidth=2,
                     linestyle=linestyle, color=group_colors[grp], label=f"Group {grp} (n={count})")
 
     ax.set_xlabel("Δθ (degree)")
@@ -109,4 +109,4 @@ def plot_telecentricity_hist(data, bins=None):
 # === Example usage ===
 plot_by_group(data, radius_mm=0.185)
 plot_by_telecentricity(data, radius_mm=0.185)
-plot_telecentricity_hist(data, bins=np.arange(0, 0.401, 0.01))
+plot_telecentricity_hist(data, bins=np.arange(0, 0.401, 0.005))
